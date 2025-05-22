@@ -30,8 +30,11 @@ inputs:
     description: "MCP configuration as JSON string or path to MCP configuration JSON file"
     required: false
     default: ""
-  anthropic_model:
+  model:
     description: "Model to use (provider-specific format required for Bedrock/Vertex)"
+    required: false
+  anthropic_model:
+    description: "DEPRECATED: Use 'model' instead. Model to use (provider-specific format required for Bedrock/Vertex)"
     required: false
     default: "claude-3-7-sonnet-20250219"
 
@@ -100,7 +103,7 @@ runs:
       env:
         # Model configuration
         CLAUDE_CODE_ACTION: "1"
-        ANTHROPIC_MODEL: ${{ inputs.anthropic_model }}
+        ANTHROPIC_MODEL: ${{ inputs.model || inputs.anthropic_model }}
         INPUT_PROMPT: ${{ inputs.prompt }}
         INPUT_PROMPT_FILE: ${{ inputs.prompt_file }}
         INPUT_ALLOWED_TOOLS: ${{ inputs.allowed_tools }}
