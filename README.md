@@ -45,7 +45,8 @@ Add the following to your workflow file:
 | `disallowed_tools`  | Comma-separated list of disallowed tools that Claude Code cannot use                              | No       | ''                           |
 | `max_turns`         | Maximum number of conversation turns (default: no limit)                                          | No       | ''                           |
 | `mcp_config`        | Path to the MCP configuration JSON file                                                           | No       | ''                           |
-| `anthropic_model`   | Model to use (provider-specific format required for Bedrock/Vertex)                               | No       | 'claude-3-7-sonnet-20250219' |
+| `model`             | Model to use (provider-specific format required for Bedrock/Vertex)                               | No       | 'claude-3-7-sonnet-20250219' |
+| `anthropic_model`   | DEPRECATED: Use 'model' instead                                                                   | No       | 'claude-3-7-sonnet-20250219' |
 | `timeout_minutes`   | Timeout in minutes for Claude Code execution                                                      | No       | '10'                         |
 | `anthropic_api_key` | Anthropic API key (required for direct Anthropic API)                                             | No       | ''                           |
 | `use_bedrock`       | Use Amazon Bedrock with OIDC authentication instead of direct Anthropic API                       | No       | 'false'                      |
@@ -189,7 +190,7 @@ Use provider-specific model names based on your chosen provider:
   uses: anthropics/claude-code-base-action@beta
   with:
     prompt: "Your prompt here"
-    anthropic_model: "claude-3-7-sonnet-20250219"
+    model: "claude-3-7-sonnet-20250219"
     anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
 
 # For Amazon Bedrock (requires OIDC authentication)
@@ -203,7 +204,7 @@ Use provider-specific model names based on your chosen provider:
   uses: anthropics/claude-code-base-action@beta
   with:
     prompt: "Your prompt here"
-    anthropic_model: "anthropic.claude-3-7-sonnet-20250219-v1:0"
+    model: "anthropic.claude-3-7-sonnet-20250219-v1:0"
     use_bedrock: "true"
 
 # For Google Vertex AI (requires OIDC authentication)
@@ -217,7 +218,7 @@ Use provider-specific model names based on your chosen provider:
   uses: anthropics/claude-code-base-action@beta
   with:
     prompt: "Your prompt here"
-    anthropic_model: "claude-3-7-sonnet@20250219"
+    model: "claude-3-7-sonnet@20250219"
     use_vertex: "true"
 ```
 
@@ -237,7 +238,7 @@ This example shows how to use OIDC authentication with AWS Bedrock:
   with:
     prompt: "Your prompt here"
     use_bedrock: "true"
-    anthropic_model: "anthropic.claude-3-7-sonnet-20250219-v1:0"
+    model: "anthropic.claude-3-7-sonnet-20250219-v1:0"
     allowed_tools: "Bash(git:*),View,GlobTool,GrepTool,BatchTool"
 ```
 
@@ -257,7 +258,7 @@ This example shows how to use OIDC authentication with GCP Vertex AI:
   with:
     prompt: "Your prompt here"
     use_vertex: "true"
-    anthropic_model: "claude-3-7-sonnet@20250219"
+    model: "claude-3-7-sonnet@20250219"
     allowed_tools: "Bash(git:*),View,GlobTool,GrepTool,BatchTool"
 ```
 
