@@ -1,5 +1,11 @@
 # Claude Max Code Base Action
 
+> **🎉 Use Your Claude Max Subscription in GitHub Actions!**
+>
+> This is a fork of [anthropics/claude-code-base-action](https://github.com/anthropics/claude-code-base-action) that adds OAuth authentication support, enabling you to use your **Claude Max subscription** with GitHub Actions workflows.
+>
+> **Key Feature:** Authenticate with your Claude Max subscription credentials instead of requiring API keys, making it accessible to all Claude Max subscribers.
+
 This GitHub Action allows you to run [Claude Code](https://www.anthropic.com/claude-code) within your GitHub Actions workflows. You can use this to build any custom workflow on top of Claude Code.
 
 For simply tagging @claude in issues and PRs out of the box, [check out the Claude Code action and GitHub app](https://github.com/anthropics/claude-code-action).
@@ -307,7 +313,8 @@ This example shows how to use OIDC authentication with GCP Vertex AI:
 To use OAuth authentication with your Claude Max Subscription Plan:
 
 0. Login into Claude Code with your Claude Max Subscription with `/login`:
-   - Lookup your access token, refresh token and expires at values: `cat ~/.claude/.credentials.json` 
+
+   - Lookup your access token, refresh token and expires at values: `cat ~/.claude/.credentials.json`
 
 1. Add your OAuth credentials as repository secrets:
 
