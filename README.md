@@ -1,4 +1,4 @@
-# Claude Code Base Action
+# Claude Max Code Base Action
 
 This GitHub Action allows you to run [Claude Code](https://www.anthropic.com/claude-code) within your GitHub Actions workflows. You can use this to build any custom workflow on top of Claude Code.
 
@@ -15,7 +15,10 @@ Add the following to your workflow file:
   with:
     prompt: "Your prompt here"
     allowed_tools: "Bash(git:*),View,GlobTool,GrepTool,BatchTool"
-    anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+    use_oauth: "true"
+    claude_access_token: ${{ secrets.CLAUDE_ACCESS_TOKEN }}
+    claude_refresh_token: ${{ secrets.CLAUDE_REFRESH_TOKEN }}
+    claude_expires_at: ${{ secrets.CLAUDE_EXPIRES_AT }}
 
 # Or using a prompt from a file
 - name: Run Claude Code with prompt file
@@ -23,7 +26,10 @@ Add the following to your workflow file:
   with:
     prompt_file: "/path/to/prompt.txt"
     allowed_tools: "Bash(git:*),View,GlobTool,GrepTool,BatchTool"
-    anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+    use_oauth: "true"
+    claude_access_token: ${{ secrets.CLAUDE_ACCESS_TOKEN }}
+    claude_refresh_token: ${{ secrets.CLAUDE_REFRESH_TOKEN }}
+    claude_expires_at: ${{ secrets.CLAUDE_EXPIRES_AT }}
 
 # Or limiting the conversation turns
 - name: Run Claude Code with limited turns
@@ -32,7 +38,10 @@ Add the following to your workflow file:
     prompt: "Your prompt here"
     allowed_tools: "Bash(git:*),View,GlobTool,GrepTool,BatchTool"
     max_turns: "5" # Limit conversation to 5 turns
-    anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+    use_oauth: "true"
+    claude_access_token: ${{ secrets.CLAUDE_ACCESS_TOKEN }}
+    claude_refresh_token: ${{ secrets.CLAUDE_REFRESH_TOKEN }}
+    claude_expires_at: ${{ secrets.CLAUDE_EXPIRES_AT }}
 ```
 
 ## Inputs
@@ -77,7 +86,10 @@ You can provide a custom MCP configuration file to dynamically load MCP servers:
     prompt: "Your prompt here"
     mcp_config: "path/to/mcp-config.json"
     allowed_tools: "Bash(git:*),View,GlobTool,GrepTool,BatchTool"
-    anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+    use_oauth: "true"
+    claude_access_token: ${{ secrets.CLAUDE_ACCESS_TOKEN }}
+    claude_refresh_token: ${{ secrets.CLAUDE_REFRESH_TOKEN }}
+    claude_expires_at: ${{ secrets.CLAUDE_EXPIRES_AT }}
 ```
 
 The MCP config file should follow this format:
@@ -107,7 +119,10 @@ You can combine MCP config with other inputs like allowed tools:
     mcp_config: "mcp-config.json"
     allowed_tools: "Bash(git:*),View,mcp__server-name__custom_tool"
     timeout_minutes: "15"
-    anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+    use_oauth: "true"
+    claude_access_token: ${{ secrets.CLAUDE_ACCESS_TOKEN }}
+    claude_refresh_token: ${{ secrets.CLAUDE_REFRESH_TOKEN }}
+    claude_expires_at: ${{ secrets.CLAUDE_EXPIRES_AT }}
 ```
 
 ## Example: PR Code Review
@@ -134,7 +149,10 @@ jobs:
         with:
           prompt: "Review the PR changes. Focus on code quality, potential bugs, and performance issues. Suggest improvements where appropriate. Write your review as markdown text."
           allowed_tools: "Bash(git diff --name-only HEAD~1),Bash(git diff HEAD~1),View,GlobTool,GrepTool,Write"
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          use_oauth: "true"
+          claude_access_token: ${{ secrets.CLAUDE_ACCESS_TOKEN }}
+          claude_refresh_token: ${{ secrets.CLAUDE_REFRESH_TOKEN }}
+          claude_expires_at: ${{ secrets.CLAUDE_EXPIRES_AT }}
 
       - name: Extract and Comment PR Review
         if: steps.code-review.outputs.conclusion == 'success'
@@ -282,9 +300,35 @@ This example shows how to use OIDC authentication with GCP Vertex AI:
 
 ## Security Best Practices
 
-**⚠️ IMPORTANT: Never commit API keys directly to your repository! Always use GitHub Actions secrets.**
+**⚠️ IMPORTANT: Never commit API keys or OAuth tokens directly to your repository! Always use GitHub Actions secrets.**
 
-To securely use your Anthropic API key:
+### OAuth Authentication Setup
+
+To use OAuth authentication with your Claude Max Subscription Plan:
+
+0. Login into Claude Code with your Claude Max Subscription with `/login`:
+   - Lookup your access token, refresh token and expires at values: `cat ~/.claude/.credentials.json` 
+
+1. Add your OAuth credentials as repository secrets:
+
+   - Go to your repository's Settings
+   - Navigate to "Secrets and variables" → "Actions"
+   - Add the following secrets:
+     - `CLAUDE_ACCESS_TOKEN` - Your Claude AI OAuth access token
+     - `CLAUDE_REFRESH_TOKEN` - Your Claude AI OAuth refresh token
+     - `CLAUDE_EXPIRES_AT` - Token expiration timestamp (Unix timestamp in seconds)
+
+2. Reference the secrets in your workflow:
+   ```yaml
+   use_oauth: "true"
+   claude_access_token: ${{ secrets.CLAUDE_ACCESS_TOKEN }}
+   claude_refresh_token: ${{ secrets.CLAUDE_REFRESH_TOKEN }}
+   claude_expires_at: ${{ secrets.CLAUDE_EXPIRES_AT }}
+   ```
+
+### API Key Authentication Setup (Legacy)
+
+To use API key authentication:
 
 1. Add your API key as a repository secret:
 
