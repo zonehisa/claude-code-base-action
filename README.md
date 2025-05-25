@@ -37,21 +37,25 @@ Add the following to your workflow file:
 
 ## Inputs
 
-| Input               | Description                                                                                       | Required | Default                      |
-| ------------------- | ------------------------------------------------------------------------------------------------- | -------- | ---------------------------- |
-| `prompt`            | The prompt to send to Claude Code                                                                 | No\*     | ''                           |
-| `prompt_file`       | Path to a file containing the prompt to send to Claude Code                                       | No\*     | ''                           |
-| `allowed_tools`     | Comma-separated list of allowed tools for Claude Code to use                                      | No       | ''                           |
-| `disallowed_tools`  | Comma-separated list of disallowed tools that Claude Code cannot use                              | No       | ''                           |
-| `max_turns`         | Maximum number of conversation turns (default: no limit)                                          | No       | ''                           |
-| `mcp_config`        | Path to the MCP configuration JSON file                                                           | No       | ''                           |
-| `model`             | Model to use (provider-specific format required for Bedrock/Vertex)                               | No       | 'claude-3-7-sonnet-20250219' |
-| `anthropic_model`   | DEPRECATED: Use 'model' instead                                                                   | No       | 'claude-3-7-sonnet-20250219' |
-| `timeout_minutes`   | Timeout in minutes for Claude Code execution                                                      | No       | '10'                         |
-| `anthropic_api_key` | Anthropic API key (required for direct Anthropic API)                                             | No       | ''                           |
-| `use_bedrock`       | Use Amazon Bedrock with OIDC authentication instead of direct Anthropic API                       | No       | 'false'                      |
-| `use_vertex`        | Use Google Vertex AI with OIDC authentication instead of direct Anthropic API                     | No       | 'false'                      |
-| `use_node_cache`    | Whether to use Node.js dependency caching (set to true only for Node.js projects with lock files) | No       | 'false'                      |
+| Input                  | Description                                                                                       | Required | Default                      |
+| ---------------------- | ------------------------------------------------------------------------------------------------- | -------- | ---------------------------- |
+| `prompt`               | The prompt to send to Claude Code                                                                 | No\*     | ''                           |
+| `prompt_file`          | Path to a file containing the prompt to send to Claude Code                                       | No\*     | ''                           |
+| `allowed_tools`        | Comma-separated list of allowed tools for Claude Code to use                                      | No       | ''                           |
+| `disallowed_tools`     | Comma-separated list of disallowed tools that Claude Code cannot use                              | No       | ''                           |
+| `max_turns`            | Maximum number of conversation turns (default: no limit)                                          | No       | ''                           |
+| `mcp_config`           | Path to the MCP configuration JSON file                                                           | No       | ''                           |
+| `model`                | Model to use (provider-specific format required for Bedrock/Vertex)                               | No       | 'claude-3-7-sonnet-20250219' |
+| `anthropic_model`      | DEPRECATED: Use 'model' instead                                                                   | No       | 'claude-3-7-sonnet-20250219' |
+| `timeout_minutes`      | Timeout in minutes for Claude Code execution                                                      | No       | '10'                         |
+| `anthropic_api_key`    | Anthropic API key (required for direct Anthropic API)                                             | No       | ''                           |
+| `use_bedrock`          | Use Amazon Bedrock with OIDC authentication instead of direct Anthropic API                       | No       | 'false'                      |
+| `use_vertex`           | Use Google Vertex AI with OIDC authentication instead of direct Anthropic API                     | No       | 'false'                      |
+| `use_oauth`            | Use Claude AI OAuth authentication instead of API key                                             | No       | 'false'                      |
+| `claude_access_token`  | Claude AI OAuth access token (required when use_oauth is true)                                    | No       | ''                           |
+| `claude_refresh_token` | Claude AI OAuth refresh token (required when use_oauth is true)                                   | No       | ''                           |
+| `claude_expires_at`    | Claude AI OAuth token expiration timestamp (required when use_oauth is true)                      | No       | ''                           |
+| `use_node_cache`       | Whether to use Node.js dependency caching (set to true only for Node.js projects with lock files) | No       | 'false'                      |
 
 \*Either `prompt` or `prompt_file` must be provided, but not both.
 
@@ -168,11 +172,12 @@ Check out additional examples in [`./examples`](./examples).
 
 ## Using Cloud Providers
 
-You can authenticate with Claude using any of these three methods:
+You can authenticate with Claude using any of these four methods:
 
 1. Direct Anthropic API (default) - requires API key
-2. Amazon Bedrock - requires OIDC authentication and automatically uses cross-region inference profiles
-3. Google Vertex AI - requires OIDC authentication
+2. Claude AI OAuth authentication - requires OAuth tokens
+3. Amazon Bedrock - requires OIDC authentication and automatically uses cross-region inference profiles
+4. Google Vertex AI - requires OIDC authentication
 
 **Note**:
 
@@ -194,6 +199,17 @@ Use provider-specific model names based on your chosen provider:
     prompt: "Your prompt here"
     model: "claude-3-7-sonnet-20250219"
     anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+
+# For Claude AI OAuth authentication
+- name: Run Claude Code with OAuth
+  uses: anthropics/claude-code-base-action@beta
+  with:
+    prompt: "Your prompt here"
+    model: "claude-3-7-sonnet-20250219"
+    use_oauth: "true"
+    claude_access_token: ${{ secrets.CLAUDE_ACCESS_TOKEN }}
+    claude_refresh_token: ${{ secrets.CLAUDE_REFRESH_TOKEN }}
+    claude_expires_at: ${{ secrets.CLAUDE_EXPIRES_AT }}
 
 # For Amazon Bedrock (requires OIDC authentication)
 - name: Configure AWS Credentials (OIDC)
